@@ -1,0 +1,110 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+interface CurrencyConverter {
+    double convert(double amount);
+}
+
+class USDCurrencyConverter implements CurrencyConverter {
+    private static final double RATE = 1.0; // 1 USD = 1 USD
+
+    @Override
+    public double convert(double amount) {
+        return amount * RATE;
+    }
+}
+
+class EURCurrencyConverter implements CurrencyConverter {
+    private static final double RATE = 0.82; // 1 USD = 0.82 EUR
+
+    @Override
+    public double convert(double amount) {
+        return amount * RATE;
+    }
+}
+
+class GBPCurrencyConverter implements CurrencyConverter {
+    private static final double RATE = 0.72; // 1 USD = 0.72 GBP
+
+    @Override
+    public double convert(double amount) {
+        return amount * RATE;
+    }
+}
+
+public class CurrencyConverterSystem {
+    private static ArrayList<CurrencyConverter> converters = new ArrayList<>();
+
+    private static void initializeConverters() {
+        converters.add(new USDCurrencyConverter());
+        converters.add(new EURCurrencyConverter());
+        converters.add(new GBPCurrencyConverter());
+    }
+
+    private static void displayMenu() {
+        System.out.println("Currency Conversion System");
+        System.out.println("----------------------------");
+
+        int i = 1;
+        for (CurrencyConverter converter : converters) {
+            System.out.println(i + ". " + converter.getClass().getSimpleName());
+            i++;
+        }
+
+        System.out.println("0. Exit");
+        System.out.println();
+    }
+
+    private static void convertCurrency(Scanner scanner) {
+        System.out.println("Enter the amount to convert:");
+
+        double amount = scanner.nextDouble();
+
+        System.out.println("Select the currency to convert to:");
+        displayMenu();
+
+        int choice = scanner.nextInt();
+
+        if (choice < 0 || choice > converters.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        if (choice == 0) {
+            System.out.println("Exiting...");
+            System.exit(0);
+        }
+
+        CurrencyConverter converter = converters.get(choice - 1);
+        double convertedAmount = converter.convert(amount);
+
+        System.out.println(amount + " USD is equivalent to " + convertedAmount + " " + converter.getClass().getSimpleName());
+    }
+
+    public static void main(String[] args) {
+        initializeConverters();
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            displayMenu();
+            System.out.println("Enter your choice:");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 0:
+                    System.out.println("Exiting...");
+                    System.exit(0);
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                    convertCurrency(scanner);
+                    break;
+                default:
+                    System.out.println("Invalid choice.");
+                    break;
+            }
+        }
+    }
+}
